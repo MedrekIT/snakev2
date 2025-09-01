@@ -14,6 +14,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+        
+        da_snake.update(dt)
+        print(da_snake.direction)
         screen.fill("black")
         da_snake.draw(screen)
         pygame.display.flip()
