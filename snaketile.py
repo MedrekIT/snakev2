@@ -8,35 +8,35 @@ class Direction(Enum):
     RIGHT = 'd'
     NONE = ''
 
-class Snake(RectangleShape):
+class SnakeTile(RectangleShape):
     def __init__(self, x, y):
-        super().__init__(x, y, SNAKE_EDGE)
+        super().__init__(x, y, RECT_EDGE)
         self.direction = Direction.NONE
     
     def move(self):
         if self.direction == Direction.RIGHT:
-            self.x += SNAKE_EDGE
+            self.x += RECT_EDGE
         if self.direction == Direction.LEFT:
-            self.x -= SNAKE_EDGE
+            self.x -= RECT_EDGE
         if self.direction == Direction.DOWN:
-            self.y += SNAKE_EDGE
+            self.y += RECT_EDGE
         if self.direction == Direction.UP:
-            self.y -= SNAKE_EDGE
+            self.y -= RECT_EDGE
     
     def turn(self, dir: Direction):
         self.direction = dir
     
     def rectangle(self):
-        a = self.x - SNAKE_EDGE // 2
-        b = self.y - SNAKE_EDGE // 2
+        a = self.x - RECT_EDGE // 2
+        b = self.y - RECT_EDGE // 2
 
-        return [a, b, SNAKE_EDGE, SNAKE_EDGE]
+        return [a, b, RECT_EDGE, RECT_EDGE]
     
     def draw(self, screen):
         pygame.draw.rect(screen, "white", self.rectangle(), 2)
         return super().draw(screen)
     
-    def update(self, dt):
+    def update(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a] and self.direction != Direction.RIGHT:
