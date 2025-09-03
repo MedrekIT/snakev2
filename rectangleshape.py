@@ -13,6 +13,11 @@ class RectangleShape(pygame.sprite.Sprite):
         self.y = y
         self.velocity = pygame.Vector2(0, 0)
         self.edge = edge
+    
+    def collision(self, other):
+        if self.x == other.x and self.y == other.y:
+            return True
+        return False
 
     def draw(self, screen):
         pass

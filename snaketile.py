@@ -9,9 +9,12 @@ class Direction(Enum):
     NONE = ''
 
 class SnakeTile(RectangleShape):
-    def __init__(self, x, y):
+    def __init__(self, x, y, is_head = False, direction = Direction.NONE):
         super().__init__(x, y, RECT_EDGE)
-        self.direction = Direction.NONE
+        self.direction = direction
+        self.is_head = is_head
+        self.is_tail = True
+        print(self.direction)
     
     def move(self):
         if self.direction == Direction.RIGHT:
@@ -26,14 +29,8 @@ class SnakeTile(RectangleShape):
     def turn(self, dir: Direction):
         self.direction = dir
     
-    def rectangle(self):
-        a = self.x - RECT_EDGE // 2
-        b = self.y - RECT_EDGE // 2
-
-        return [a, b, RECT_EDGE, RECT_EDGE]
-    
     def draw(self, screen):
-        pygame.draw.rect(screen, "white", self.rectangle(), 2)
+        pygame.draw.rect(screen, "white", [self.x, self.y, RECT_EDGE, RECT_EDGE], 2)
         return super().draw(screen)
     
     def update(self):
