@@ -35,11 +35,7 @@ def main():
                 return
         
         updatable.update()
-<<<<<<< HEAD
-        snake_head.update(snake_tiles)
-=======
         snake_tiles.update(snake_tiles)
->>>>>>> c541156 (Added snake tiles proper movement)
         for tile in snake_tiles:
             if tile.is_head and tile.collision(an_apple):
                 print("Apple eaten!")

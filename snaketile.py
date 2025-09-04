@@ -17,17 +17,16 @@ class SnakeTile(RectangleShape):
         print(self.direction)
     
     def move(self, snake_tiles):
-        if self.is_head:
-            prev_x = self.x
-            prev_y = self.y
-            if self.direction == Direction.RIGHT:
-                self.x += RECT_EDGE
-            if self.direction == Direction.LEFT:
-                self.x -= RECT_EDGE
-            if self.direction == Direction.DOWN:
-                self.y += RECT_EDGE
-            if self.direction == Direction.UP:
-                self.y -= RECT_EDGE
+        prev_x = self.x
+        prev_y = self.y
+        if self.direction == Direction.RIGHT:
+            self.x += RECT_EDGE
+        if self.direction == Direction.LEFT:
+            self.x -= RECT_EDGE
+        if self.direction == Direction.DOWN:
+            self.y += RECT_EDGE
+        if self.direction == Direction.UP:
+            self.y -= RECT_EDGE
         
         for tile in snake_tiles:
             if not tile.is_head:
@@ -52,5 +51,6 @@ class SnakeTile(RectangleShape):
             self.turn(Direction.UP)
         if keys[pygame.K_s] and self.direction != Direction.UP:
             self.turn(Direction.DOWN)
-
-        self.move(snake_tiles)
+        
+        if(self.is_head):
+            self.move(snake_tiles)
