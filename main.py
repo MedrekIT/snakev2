@@ -16,7 +16,7 @@ def main():
     snake_tiles = pygame.sprite.Group()
     SnakeBody.containers = updatable
     Apple.containers = (updatable, drawable)
-    SnakeTile.containers = (updatable, drawable, snake_tiles)
+    SnakeTile.containers = (drawable, snake_tiles)
 
     
     snake_body = SnakeBody()
@@ -35,6 +35,7 @@ def main():
                 return
         
         updatable.update()
+        snake_head.update(snake_tiles)
         for tile in snake_tiles:
             if tile.is_head and tile.collision(an_apple):
                 print("Apple eaten!")
@@ -46,7 +47,7 @@ def main():
         for obj in drawable:
             obj.draw(screen)
         pygame.display.flip()
-        dt = game_clock.tick(24) / 1000
+        game_clock.tick(24) / 1000
 
 if __name__ == "__main__":
     main()

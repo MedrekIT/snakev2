@@ -26,3 +26,11 @@ class SnakeBody(pygame.sprite.Sprite):
             return tile.x + RECT_EDGE, tile.y, direction
         else:
             raise Exception("Error: unknown snake direction")
+    
+    def follow(self, snake_tiles):
+        for tile in snake_tiles:
+            if not tile.is_head:
+                tile.x = prev_x
+                tile.y = prev_y
+            prev_x = tile.x
+            prev_y = tile.y
