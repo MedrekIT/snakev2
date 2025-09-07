@@ -38,7 +38,7 @@ def main():
         snake_tiles.update(snake_tiles)
         for tile in snake_tiles:
             if tile.is_head and tile.collision(an_apple):
-                print("Apple eaten!")
+                an_apple.spawn()
                 snake_body.extend(snake_tiles)
             if not tile.is_head and tile.collision(snake_head):
                 print("Game over!")

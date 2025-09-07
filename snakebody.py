@@ -12,6 +12,14 @@ class SnakeBody(pygame.sprite.Sprite):
             if tile.is_tail:
                 x, y, direction = self.position(tile)
                 tile.is_tail = False
+        if direction == Direction.RIGHT:
+            x += RECT_EDGE
+        if direction == Direction.LEFT:
+            x -= RECT_EDGE
+        if direction == Direction.DOWN:
+            y += RECT_EDGE
+        if direction == Direction.UP:
+            y -= RECT_EDGE
         new_tile = SnakeTile(x, y, direction=direction)
     
     def position(self, tile):
