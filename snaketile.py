@@ -44,13 +44,12 @@ class SnakeTile(RectangleShape):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a] and self.direction != Direction.RIGHT:
-            self.turn(Direction.LEFT)
-        if keys[pygame.K_d] and self.direction != Direction.LEFT:
-            self.turn(Direction.RIGHT)
-        if keys[pygame.K_w] and self.direction != Direction.DOWN:
-            self.turn(Direction.UP)
-        if keys[pygame.K_s] and self.direction != Direction.UP:
-            self.turn(Direction.DOWN)
+                self.turn(Direction.LEFT)
+        elif keys[pygame.K_d] and self.direction != Direction.LEFT:
+                self.turn(Direction.RIGHT)
+        elif keys[pygame.K_w] and self.direction != Direction.DOWN:
+                self.turn(Direction.UP)
+        elif keys[pygame.K_s] and self.direction != Direction.UP:
+                self.turn(Direction.DOWN)
         
-        if(self.is_head):
-            self.move(snake_tiles)
+        self.move(snake_tiles)
