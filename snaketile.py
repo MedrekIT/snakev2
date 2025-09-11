@@ -14,7 +14,6 @@ class SnakeTile(RectangleShape):
         self.direction = direction
         self.is_head = is_head
         self.is_tail = True
-        print(self.direction)
     
     def move(self, snake_tiles):
         prev_x = self.x

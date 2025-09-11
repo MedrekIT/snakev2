@@ -35,6 +35,10 @@ def mainMenu(screen, game_font):
             if event.type == pygame.QUIT:
                 exit()
         
+        gameName = game_font.render("Snake!", True, (255, 255, 255))
+        nameRect = gameName.get_rect()
+        nameRect.center = (SCREEN_WIDTH // 2, 30)
+
         diffReq = game_font.render("Choose difficulty:", True, (255, 255, 255))
         reqRect = diffReq.get_rect()
         reqRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3)
@@ -55,6 +59,7 @@ def mainMenu(screen, game_font):
         fourRect = diffReq.get_rect()
         fourRect.center = (SCREEN_WIDTH // 2, reqRect.centery + 200)
 
+        screen.blit(gameName, nameRect)
         screen.blit(diffReq, reqRect)
         screen.blit(diff1, oneRect)
         screen.blit(diff2, twoRect)
@@ -89,7 +94,8 @@ def main():
         apple_y = random.randrange(0, SCREEN_HEIGHT, RECT_EDGE)
     an_apple = Apple(apple_x, apple_y, RECT_EDGE)
 
-    score = 1
+    score = 0
+    apple_time = pygame.time.get_ticks()
 
     while True:
         for event in pygame.event.get():
@@ -106,16 +112,18 @@ def main():
                 print("Game over!")
                 exit()
         if snake_head.collision(an_apple):
-            print((2 ** len(snake_tiles)))
-            score += (2 ** (len(snake_tiles) * DIFF.value)) // (score // (10 * DIFF.value))
-            print((2 ** (len(snake_tiles) * DIFF.value)) // (score // (10 * DIFF.value)))
+            score += int(((((2 ** len(snake_tiles)) * (2 ** DIFF.value)) * 0.1) // (0.1 * score)) + 0.1 * score)
+            apple_time = pygame.time.get_ticks()
             an_apple.spawn()
             snake_body.extend(snake_tiles)
         
         if snake_head.direction != Direction.NONE:
-            score += (len(snake_tiles) * DIFF.value * game_clock.get_time()) // 10
+            if pygame.time.get_ticks() - apple_time < 1:
+                score += ((len(snake_tiles) * DIFF.value * game_clock.get_time()) // 10)
+            else:
+                score += int(((len(snake_tiles) * DIFF.value * game_clock.get_time()) // 10) / ((pygame.time.get_ticks() - apple_time) / 100))
         
-        screen.fill("black")
+        screen.fill((16, 23, 32))
         for obj in drawable:
             obj.draw(screen)
         scoreText = game_font.render(f"Score: {score}", True, (255, 255, 255))
@@ -124,7 +132,7 @@ def main():
         screen.blit(scoreText, scoreRect)
         pygame.display.flip()
 
-        game_clock.tick(10 + ((len(snake_tiles)/2) * DIFF.value)) / 1000
+        game_clock.tick(10 + ((len(snake_tiles) // 2) * DIFF.value)) / 1000
 
 if __name__ == "__main__":
     main()
