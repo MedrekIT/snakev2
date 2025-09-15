@@ -1,9 +1,7 @@
 import pygame
-import random
 from constants import *
 from snaketile import SnakeTile, Direction
 from apple import Apple
-from snakebody import SnakeBody
 from enum import Enum
 
 class Difficulty(Enum):
@@ -18,20 +16,15 @@ def mainMenu(screen, game_font):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 keys = pygame.key.get_pressed()
-                global DIFF
 
                 if keys[pygame.K_1]:
-                    DIFF = Difficulty.EASY
-                    return
-                if keys[pygame.K_2]:
-                    DIFF = Difficulty.NORMAL
-                    return
-                if keys[pygame.K_3]:
-                    DIFF = Difficulty.HARD
-                    return
-                if keys[pygame.K_4]:
-                    DIFF = Difficulty.INSANE
-                    return
+                    return Difficulty.EASY
+                elif keys[pygame.K_2]:
+                    return Difficulty.NORMAL
+                elif keys[pygame.K_3]:
+                    return Difficulty.HARD
+                elif keys[pygame.K_4]:
+                    return Difficulty.INSANE
             if event.type == pygame.QUIT:
                 exit()
         
@@ -75,53 +68,45 @@ def main():
     pygame.display.set_caption("Snake")
     game_font = pygame.font.SysFont("timesnewroman", 30)
 
-    mainMenu(screen, game_font)
+    DIFF = mainMenu(screen, game_font)
+    score = 0
 
-    updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     snake_tiles = pygame.sprite.Group()
-    SnakeBody.containers = updatable
-    Apple.containers = (updatable, drawable)
+    Apple.containers = drawable
     SnakeTile.containers = (drawable, snake_tiles)
 
-    snake_body = SnakeBody()
     snake_head = SnakeTile(SCREEN_WIDTH // 2 - RECT_EDGE, SCREEN_HEIGHT // 2 - RECT_EDGE, True)
-
-    apple_x = random.randrange(0, SCREEN_WIDTH, RECT_EDGE)
-    apple_y = random.randrange(0, SCREEN_HEIGHT, RECT_EDGE)
-    while apple_x == snake_head.x and apple_y == snake_head.y:
-        apple_x = random.randrange(0, SCREEN_WIDTH, RECT_EDGE)
-        apple_y = random.randrange(0, SCREEN_HEIGHT, RECT_EDGE)
-    an_apple = Apple(apple_x, apple_y, RECT_EDGE)
-
-    score = 0
-    apple_time = pygame.time.get_ticks()
+    apple = Apple(0, 0, RECT_EDGE)
+    apple.update(snake_tiles)
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+        
+        snake_tiles.update()
+        if apple.is_eaten:
+            for tile in snake_tiles:
+                if tile.is_tail:
+                    tile.extend()
+        apple.update(snake_tiles)
 
-        updatable.update()
-        snake_head.update(snake_tiles)
         if snake_head.x < 0 or snake_head.x >= SCREEN_WIDTH or snake_head.y < 0 or snake_head.y >= SCREEN_HEIGHT:
             print("Game over!")
             exit()
         for tile in snake_tiles:
             if not tile.is_head and tile.collision(snake_head):
                 print("Game over!")
+                for tile in snake_tiles:
+                    print(tile.x, tile.y)
                 exit()
-        if snake_head.collision(an_apple):
+        if snake_head.collision(apple):
             score += int(((((2 ** len(snake_tiles)) * (2 ** DIFF.value)) * 0.1) // (0.1 * score)) + 0.1 * score)
-            apple_time = pygame.time.get_ticks()
-            an_apple.spawn()
-            snake_body.extend(snake_tiles)
+            apple.is_eaten = True
         
         if snake_head.direction != Direction.NONE:
-            if pygame.time.get_ticks() - apple_time < 1:
-                score += ((len(snake_tiles) * DIFF.value * game_clock.get_time()) // 10)
-            else:
-                score += int(((len(snake_tiles) * DIFF.value * game_clock.get_time()) // 10) / ((pygame.time.get_ticks() - apple_time) / 100))
+            score += ((len(snake_tiles) * DIFF.value * game_clock.get_time()) // 100)
         
         screen.fill((16, 23, 32))
         for obj in drawable:
