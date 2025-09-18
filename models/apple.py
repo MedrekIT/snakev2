@@ -1,5 +1,5 @@
 import random
-from rectangleshape import *
+from models.rectangleshape import *
 
 class Apple(RectangleShape):
     def __init__(self, x, y, edge):
@@ -20,8 +20,8 @@ class Apple(RectangleShape):
         x = random.randrange(0, SCREEN_WIDTH, RECT_EDGE)
         y = random.randrange(0, SCREEN_HEIGHT, RECT_EDGE)
         
+        occupied_tiles = []
         for tile in snake_tiles:
-            occupied_tiles = []
             occupied_tiles.append((tile.x, tile.y))
 
         while (x, y) in occupied_tiles:

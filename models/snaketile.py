@@ -1,4 +1,4 @@
-from rectangleshape import *
+from models.rectangleshape import *
 
 class SnakeTile(RectangleShape):
     def __init__(self, x, y, is_head = False, direction = Direction.NONE):
