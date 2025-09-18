@@ -7,7 +7,7 @@ class Apple(RectangleShape):
         self.is_eaten = True
     
     def draw(self, screen):
-        pygame.draw.rect(screen, "red", [self.x + 1, self.y + 1, RECT_EDGE - 2, RECT_EDGE - 2])
+        pygame.draw.rect(screen, (200, 70, 70), [self.x + 1, self.y + 1, RECT_EDGE - 2, RECT_EDGE - 2])
         return super().draw(screen)
     
     def update(self, snake_tiles):

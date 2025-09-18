@@ -1,12 +1,4 @@
 from rectangleshape import *
-from enum import Enum
-
-class Direction(Enum):
-    UP = 'w'
-    DOWN = 's'
-    LEFT = 'a'
-    RIGHT = 'd'
-    NONE = ''
 
 class SnakeTile(RectangleShape):
     def __init__(self, x, y, is_head = False, direction = Direction.NONE):
@@ -36,7 +28,7 @@ class SnakeTile(RectangleShape):
         self.direction = dir
     
     def draw(self, screen):
-        pygame.draw.rect(screen, "white", [self.x + 1, self.y + 1, RECT_EDGE - 2, RECT_EDGE - 2])
+        pygame.draw.rect(screen, (180, 240, 200), [self.x + 1, self.y + 1, RECT_EDGE - 2, RECT_EDGE - 2])
         return super().draw(screen)
     
     def update(self):

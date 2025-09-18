@@ -4,14 +4,13 @@ from snaketile import SnakeTile, Direction
 from apple import Apple
 from enum import Enum
 
-class Difficulty(Enum):
-    EASY = 1
-    NORMAL = 2
-    HARD = 3
-    INSANE = 4
+def render_text(screen, text, pos, font=GAME_FONT, color=(240, 240, 220)):
+    text_render = font.render(text, True, color)
+    text_rect = text_render.get_rect()
+    text_rect.center = pos
+    screen.blit(text_render, text_rect)
 
-def mainMenu(screen, game_font):
-
+def mainMenu(screen):
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -28,47 +27,17 @@ def mainMenu(screen, game_font):
             if event.type == pygame.QUIT:
                 exit()
         
-        gameName = game_font.render("Snake!", True, (255, 255, 255))
-        nameRect = gameName.get_rect()
-        nameRect.center = (SCREEN_WIDTH // 2, 30)
-
-        diffReq = game_font.render("Choose difficulty:", True, (255, 255, 255))
-        reqRect = diffReq.get_rect()
-        reqRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3)
-
-        diff1 = game_font.render("1 - EASY", True, (255, 255, 255))
-        oneRect = diffReq.get_rect()
-        oneRect.center = (SCREEN_WIDTH // 2, reqRect.centery + 50)
-
-        diff2 = game_font.render("2 - NORMAL", True, (255, 255, 255))
-        twoRect = diffReq.get_rect()
-        twoRect.center = (SCREEN_WIDTH // 2, reqRect.centery + 100)
-
-        diff3 = game_font.render("3 - HARD", True, (255, 255, 255))
-        threeRect = diffReq.get_rect()
-        threeRect.center = (SCREEN_WIDTH // 2, reqRect.centery + 150)
-
-        diff4 = game_font.render("4 - INSANE", True, (255, 255, 255))
-        fourRect = diffReq.get_rect()
-        fourRect.center = (SCREEN_WIDTH // 2, reqRect.centery + 200)
-
-        screen.blit(gameName, nameRect)
-        screen.blit(diffReq, reqRect)
-        screen.blit(diff1, oneRect)
-        screen.blit(diff2, twoRect)
-        screen.blit(diff3, threeRect)
-        screen.blit(diff4, fourRect)
+        screen.fill((16, 23, 32))
+        name_font = pygame.font.SysFont("timesnewroman", 100)
+        render_text(screen, "Snake!", (SCREEN_WIDTH // 2, 60), name_font)
+        render_text(screen, "Choose difficulty:", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3))
+        for i, diff in enumerate(Difficulty, 1):
+            render_text(screen, f"{diff.value} - {diff.name}", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3 + i * 50))
         pygame.display.flip()
 
-
-def main():
-    pygame.init()
+def new_game(screen):
     game_clock = pygame.time.Clock()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Snake")
-    game_font = pygame.font.SysFont("timesnewroman", 30)
-
-    DIFF = mainMenu(screen, game_font)
+    DIFF = mainMenu(screen)
     score = 0
 
     drawable = pygame.sprite.Group()
@@ -93,14 +62,10 @@ def main():
         apple.update(snake_tiles)
 
         if snake_head.x < 0 or snake_head.x >= SCREEN_WIDTH or snake_head.y < 0 or snake_head.y >= SCREEN_HEIGHT:
-            print("Game over!")
-            exit()
+            game_over(screen, score)
         for tile in snake_tiles:
             if not tile.is_head and tile.collision(snake_head):
-                print("Game over!")
-                for tile in snake_tiles:
-                    print(tile.x, tile.y)
-                exit()
+                game_over(screen, score)
         if snake_head.collision(apple):
             score += int(((((2 ** len(snake_tiles)) * (2 ** DIFF.value)) * 0.1) // (0.1 * score)) + 0.1 * score)
             apple.is_eaten = True
@@ -111,13 +76,41 @@ def main():
         screen.fill((16, 23, 32))
         for obj in drawable:
             obj.draw(screen)
-        scoreText = game_font.render(f"Score: {score}", True, (255, 255, 255))
-        scoreRect = scoreText.get_rect()
-        scoreRect.center = (SCREEN_WIDTH // 2, 20)
-        screen.blit(scoreText, scoreRect)
+        if snake_head.direction == Direction.NONE:
+            for i, dir in enumerate(Direction):
+                if dir.value:
+                    render_text(screen, f"{dir.value} - Move {dir.name}", (150, SCREEN_HEIGHT // 4 * 3 + i * 50))
+        render_text(screen, f"Score: {score}", (SCREEN_WIDTH // 2, 20))
         pygame.display.flip()
 
         game_clock.tick(10 + ((len(snake_tiles) // 2) * DIFF.value)) / 1000
+
+def game_over(screen, score):
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_SPACE]:
+                    new_game(screen)
+                if keys[pygame.K_ESCAPE]:
+                    exit()
+            if event.type == pygame.QUIT:
+                exit()
+        
+        screen.fill((16, 23, 32))
+        over_font = pygame.font.SysFont("timesnewroman", 70)
+        render_text(screen, "Game over!", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), over_font)
+        render_text(screen, f"Your score: {score}", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 150))
+        render_text(screen, "Press [SPACE] to play again!", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 200))
+        render_text(screen, "Press [ESC] or close the window to leave!", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 250))
+        pygame.display.flip()
+
+def main():
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Snake")
+
+    new_game(screen)
+    
 
 if __name__ == "__main__":
     main()
