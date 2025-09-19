@@ -79,7 +79,7 @@ def pause(screen):
 def new_game(screen):
     game_clock = pygame.time.Clock()
     DIFF = diff_screen(screen)
-    score = 0
+    score = 1
 
     drawable = pygame.sprite.Group()
     snake_tiles = pygame.sprite.Group()
@@ -129,7 +129,7 @@ def new_game(screen):
             for i, dir in enumerate(Direction):
                 if dir.value:
                     render_text(screen, f"[{dir.value}] - Move {dir.name}", (150, SCREEN_HEIGHT // 4 * 3 + i * 50))
-        render_text(screen, f"Score: {score}", (SCREEN_WIDTH // 2, 20))
+        render_text(screen, f"Score: {score - 1}", (SCREEN_WIDTH // 2, 20))
         pygame.display.flip()
 
         game_clock.tick(10 + ((len(snake_tiles) // 2) * DIFF.value)) / 1000
@@ -198,7 +198,7 @@ def leaderboard(screen):
         render_text(screen, "Leaderboard:", (SCREEN_WIDTH // 2, 50), leaderboard_font)
         if len(scores) > 0:
             for i, score in enumerate(scores[:10], 1):
-                render_text(screen, f"{i}.{score.score} - Difficulty: {score.diff}", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // (len(scores[:10]) + 1) + i * 50))
+                render_text(screen, f"{i}. Score: {score.score} - Difficulty: {score.diff}", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // (len(scores[:10]) + 1) + i * 50))
             render_text(screen, "Press [SPACE] to start game!", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // (len(scores[:10]) + 1) + (len(scores[:10]) + 1) * 50))
             render_text(screen, "Press [BACKSPACE] to reset scores!", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // (len(scores[:10]) + 1) + (len(scores[:10]) + 1) * 50 + 40))
             render_text(screen, "Press [ESC] to leave to main menu!", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // (len(scores[:10]) + 1) + (len(scores[:10]) + 1) * 50 + 80))

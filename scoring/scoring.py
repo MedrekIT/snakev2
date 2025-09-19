@@ -35,7 +35,7 @@ class AllScores:
     
     def get_scores_from_file(self):
         try:
-            with open("./leaderboard.log") as f:
+            with open("./scoring/leaderboard.log") as f:
                 file_contents = f.read()
             f.close()
 
@@ -50,7 +50,7 @@ class AllScores:
 
     def save_scores_to_file(self):
         try:
-            with open("./leaderboard.log", "w") as f:
+            with open("./scoring/leaderboard.log", "w") as f:
                 scores = ""
                 for score in self.scores:
                     scores += f"{score.score} - {score.diff}\n"

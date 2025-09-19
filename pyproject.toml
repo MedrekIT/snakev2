@@ -1,7 +1,7 @@
 [project]
-name = "snake2"
+name = "snake"
 version = "0.1.0"
-description = "Add your description here"
+description = "Classic snake game remake made in Python with Pygame"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
